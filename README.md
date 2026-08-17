@@ -38,6 +38,10 @@ python3 check.py --stats
 - 文案库:`data/copywriting.jsonl`,每行一条 JSON 记录
 - 字段:`date` 入库时间、`match` 赛事标签、`source` 来源、`text` 文案全文
 
+## 提示词
+
+- 文案生成提示词 → `prompts/copywriting.md`
+
 ## 说明
 
 - 本库只防"自我重复"。全网查重(别人抄你/你抄别人)需配合抖音站内搜索验证
@@ -47,3 +51,5 @@ python3 check.py --stats
 
 - 2026-08-17:创建,初始收录 4 条文案
 - 2026-08-17:仓库改为公开
+- 2026-08-17:文案数据清空
+- 2026-08-17:新增 prompts/copywriting.md 文案生成提示词
