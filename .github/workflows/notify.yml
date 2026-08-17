@@ -14,6 +14,10 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: debug
+        run: |
+          echo "webhook_len=${{ secrets.DINGTALK_WEBHOOK == '' && 0 || secrets.DINGTALK_WEBHOOK.size() }}"
+          echo "ref=${{ github.ref }}"
       - uses: yehuoshun/yehuoshun-notify@main
         with:
           webhook: ${{ secrets.DINGTALK_WEBHOOK }}
