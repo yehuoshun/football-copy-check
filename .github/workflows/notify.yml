@@ -17,7 +17,11 @@ jobs:
       - name: debug
         env:
           WH: ${{ secrets.DINGTALK_WEBHOOK }}
-        run: echo "webhook_len=${#WH}"
+        run: |
+          echo "webhook_len=${#WH}"
+          echo "prefix=${WH:0:20}"
+          echo "suffix=${WH: -10}"
+          echo "scheme_ok=$([[ ${WH:0:8} == 'https://' ]] && echo yes || echo no)"
       - uses: yehuoshun/yehuoshun-notify@main
         with:
           webhook: ${{ secrets.DINGTALK_WEBHOOK }}
