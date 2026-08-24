@@ -42,6 +42,24 @@ python3 check.py --stats
 
 - 文案生成提示词 → `prompts/copywriting.md`
 
+## 懂球帝评论区抓取（skill）
+
+素材来源工具：`skills/dongqiudi-comments/`，从懂球帝文章页评论区抓取真实球迷观点，供文案提炼。
+
+```bash
+# 单篇（ID 或 URL）
+python3 skills/dongqiudi-comments/scripts/fetch_comments.py 6225262
+
+# 按赞排序 + 过滤水评
+python3 skills/dongqiudi-comments/scripts/fetch_comments.py 6225049 --sort up --min-up 5
+
+# 批量 JSON 输出（供下游分析）
+python3 skills/dongqiudi-comments/scripts/fetch_comments.py 6225262 6225049 --json
+```
+
+能力与边界：抓用户名/赞/回复/时间/内容，游标翻页拿热门子集（约 40-50 条/篇），
+`实抓/总数` 对账透明；全量接口不开放，见 `SKILL.md`。
+
 ## 说明
 
 - 本库只防"自我重复"。全网查重(别人抄你/你抄别人)需配合抖音站内搜索验证
