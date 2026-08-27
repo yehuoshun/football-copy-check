@@ -25,7 +25,9 @@ from datetime import datetime
 from difflib import SequenceMatcher
 from pathlib import Path
 
-DATA_FILE = Path(__file__).parent / "data" / "copywriting.jsonl"
+DATA_DIR = Path(__file__).parent / "data"
+DEFAULT_DB = "copywriting.jsonl"
+DATA_FILE = DATA_DIR / DEFAULT_DB
 
 HIGH = 0.80
 MED = 0.60
@@ -62,17 +64,19 @@ def similarity(a: str, b: str) -> float:
     return max(j, r)
 
 
-def load_records():
-    if not DATA_FILE.exists():
+def load_records(db: str | None = None):
+    f = DATA_DIR / (db or DEFAULT_DB)
+    if not f.exists():
         return []
-    with DATA_FILE.open(encoding="utf-8") as f:
-        return [json.loads(line) for line in f if line.strip()]
+    with f.open(encoding="utf-8") as fh:
+        return [json.loads(line) for line in fh if line.strip()]
 
 
-def save_record(rec):
-    DATA_FILE.parent.mkdir(parents=True, exist_ok=True)
-    with DATA_FILE.open("a", encoding="utf-8") as f:
-        f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+def save_record(rec, db: str | None = None):
+    f = DATA_DIR / (db or DEFAULT_DB)
+    f.parent.mkdir(parents=True, exist_ok=True)
+    with f.open("a", encoding="utf-8") as fh:
+        fh.write(json.dumps(rec, ensure_ascii=False) + "\n")
 
 
 def do_check(text: str, records, detail: bool = False):
@@ -105,9 +109,10 @@ def main():
     ap.add_argument("--force", action="store_true", help="中风险也强制入库")
     ap.add_argument("--list", action="store_true", help="列出全部文案")
     ap.add_argument("--stats", action="store_true", help="统计概览")
+    ap.add_argument("--db", default=DEFAULT_DB, help=f"数据文件(默认 {DEFAULT_DB},日常用 daily.jsonl)")
     args = ap.parse_args()
 
-    records = load_records()
+    records = load_records(args.db)
 
     if args.list:
         for i, rec in enumerate(records, 1):
@@ -143,8 +148,8 @@ def main():
             "source": args.source,
             "text": args.text,
         }
-        save_record(rec)
-        print(f"✅ 已入库 #{len(records) + 1}")
+        save_record(rec, args.db)
+        print(f"✅ 已入库 #{len(records) + 1} (db={args.db})")
 
 
 if __name__ == "__main__":
