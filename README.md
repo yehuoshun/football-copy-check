@@ -38,6 +38,18 @@ python3 check.py --stats
 - 文案库:`data/copywriting.jsonl`,每行一条 JSON 记录
 - 字段:`date` 入库时间、`match` 赛事标签、`source` 来源、`text` 文案全文
 
+## 当前流程(2026-09-12 起,影视二创包装)
+
+- 画面:影视二创片段(参考号「叫我懒洋洋」,旺角卡门包装)
+- 文案:足球锐评流(v42),正文 130~140 字,title 固定「旺角卡门之XXX」,tag 固定 3 个
+- 配音:edge-tts 生成(scripts/tts_gen.py),字幕+合成用 tools/ffmpeg/ffmpeg
+- 完整工具链固化在 `tools/`(防沙箱重置丢失),恢复见 tools/README.md
+
+## 工具链
+
+- ffmpeg/字体/TTS 依赖 → `tools/`(沙箱重置后 `bash tools/setup.sh` 一键恢复)
+- TTS 生成: `python3 scripts/tts_gen.py "文案" -o out.mp3 -v zh-CN-YunxiNeural`
+
 ## 提示词
 
 - 文案生成提示词 → `prompts/copywriting.md`
