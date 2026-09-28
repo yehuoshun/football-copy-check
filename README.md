@@ -38,17 +38,9 @@ python3 check.py --stats
 - 文案库:`data/copywriting.jsonl`,每行一条 JSON 记录
 - 字段:`date` 入库时间、`match` 赛事标签、`source` 来源、`text` 文案全文
 
-## 当前流程(2026-09-12 起,影视二创包装)
+## 文案形态
 
-- 画面:影视二创片段(参考号「叫我懒洋洋」,旺角卡门包装)
-- 文案:足球锐评流(v42),正文 130~140 字,title 固定「旺角卡门之XXX」,tag 固定 3 个
-- 配音:edge-tts 生成(scripts/tts_gen.py),字幕+合成用 tools/ffmpeg/ffmpeg
-- 完整工具链固化在 `tools/`(防沙箱重置丢失),恢复见 tools/README.md
-
-## 工具链
-
-- ffmpeg/字体/TTS 依赖 → `tools/`(沙箱重置后 `bash tools/setup.sh` 一键恢复)
-- TTS 生成: `python3 scripts/tts_gen.py "文案" -o out.mp3 -v zh-CN-YunxiNeural`
+- 球迷锐评流(文本类):正文 + 5 个动态 tag 合计 ≤ 140 字,规则见 `prompts/copywriting.md`(v56 起影视二创包装已下线)
 
 ## 提示词
 
@@ -95,3 +87,4 @@ python3 skills/dongqiudi-comments/scripts/fetch_comments.py 6225262 6225049 --js
 - 2026-09-03:提示词 v38(题材闸拆转会:结果安全/市场运作高危;红线8补退役倒计时句式)
 - 2026-09-04:提示词 v39(单点重构:五维闸门归位规则零删减、审查八步压缩为五查一终审、范例三合规化改写删反面教材)
 - 2026-09-10:提示词 v40(进球画面=进程复盘:进球/丢球事实本身禁写,远射/死角/守门员没反应/抡得准全算,落脚在进球即赌博导流)
+- 2026-09-28:提示词 v56(去除影视二创包装:删二创类 title「旺角卡门之XXX」与 3 固定 tag、字数口径回归单档;同步移除配音/合成工具链 scripts/tts_gen.py 与 tools/;库内历史二创稿保留)
