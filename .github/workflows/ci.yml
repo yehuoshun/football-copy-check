@@ -1,0 +1,28 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  selftest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: 语法检查
+        run: python3 -m py_compile check.py scripts/selftest_landing.py skills/dongqiudi-comments/scripts/fetch_comments.py
+      - name: 赌博导流元规则自测
+        run: python3 scripts/selftest_landing.py | tee /tmp/selftest.log && grep -q "11/11 判定正确" /tmp/selftest.log
+      - name: 查重冒烟
+        run: |
+          python3 check.py "梅西请全队吃饭，队友说最好的球衣是他送的" | grep -q "安全"
+          python3 check.py --stats | grep -q "文案总数"
+      - name: 半句/片段查重防回归
+        run: |
+          q=$(head -1 data/copywriting.jsonl | python3 -c "import json,sys; print(json.loads(sys.stdin.readline())['text'][:30])")
+          echo "查询片段: $q"
+          python3 check.py "$q" | grep -q "高风险"

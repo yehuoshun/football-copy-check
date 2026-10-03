@@ -25,6 +25,10 @@ from datetime import datetime
 from difflib import SequenceMatcher
 from pathlib import Path
 
+if sys.version_info < (3, 10):
+    print(f"需要 Python 3.10+（当前 {sys.version_info.major}.{sys.version_info.minor}），脚本使用了 str | None 类型标注", file=sys.stderr)
+    sys.exit(1)
+
 DATA_DIR = Path(__file__).parent / "data"
 DEFAULT_DB = "copywriting.jsonl"
 DATA_FILE = DATA_DIR / DEFAULT_DB
@@ -55,13 +59,21 @@ def jaccard(a: set, b: set) -> float:
 
 
 def similarity(a: str, b: str) -> float:
-    """取 n-gram Jaccard 与编辑相似度的最大值"""
+    """取 n-gram Jaccard、编辑相似度、双向包含度的最大值。
+
+    双向包含度 = 较短文 n-gram 被较长文覆盖的比例（取 a→b 与 b→a 较大者），
+    专治「半句/片段/改写摘要」查重漏检——截断文案与库内全文的 Jaccard/
+    编辑相似度天然偏低，但包含度接近 1。
+    """
     na, nb = normalize(a), normalize(b)
     if not na or not nb:
         return 0.0
     j = jaccard(char_ngrams(na), char_ngrams(nb))
     r = SequenceMatcher(None, na, nb).ratio()
-    return max(j, r)
+    sa, sb = char_ngrams(na), char_ngrams(nb)
+    inter = len(sa & sb)
+    c = max(inter / len(sa), inter / len(sb)) if inter else 0.0
+    return max(j, r, c)
 
 
 def load_records(db: str | None = None):
