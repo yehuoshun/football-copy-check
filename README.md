@@ -53,6 +53,24 @@ python3 check.py --stats
 - 剪辑口播稿提示词（当前 v59.1） → `prompts/copywriting-v59.md`
 - 历史版(140 字纯文本 + 5 tag) → `prompts/copywriting.md`（v58.4，保留不删）
 
+## 热点选题器（采集 → 核实 → 排序 → top1）
+
+`scripts/hot_topics.py`：多路搜索最新足球热点 → 去重聚类 → 按「真实性 45% + 可写性 35% + 热度 20%」排序 → 取 top1，另附备选与「被题材闸毙掉」清单。
+
+```bash
+python3 scripts/hot_topics.py                 # 默认 day，取 top1
+python3 scripts/hot_topics.py --top 5         # 看前 5
+python3 scripts/hot_topics.py --freshness week # 当天没得写时放宽
+python3 scripts/hot_topics.py --json          # 只出 JSON，给下游用
+```
+
+- **真实性** = 源数量 + 权威源命中 + 新鲜度 + 记者署名（罗马诺/泰晤士/官方/奥莱报…）；传闻词（据传/爆料/网传）扣分
+- **可写性** = 过 v59 题材闸（比赛进程/进球量化/逆转/伤停名单/位置/奖项/身价…），硬禁直接归零进「不可写」附录
+- **热度** = 热议/内讧/争执/回炮/道歉 等坐词命中数
+- 依赖 web-search MCP（mcporter），配置 `~/.openclaw/workspace/config/mcporter.json`
+
+⚠️ 可写性是关键词**粗筛**，会误杀也会漏放；最终落点判断仍以提示词题材闸 + 人工终审为准（脚本是筛子，不是判官）。
+
 ## 懂球帝评论区抓取（skill）
 
 素材来源工具：`skills/dongqiudi-comments/`，从懂球帝文章页评论区抓取真实球迷观点，供文案提炼。
@@ -98,3 +116,4 @@ python3 skills/dongqiudi-comments/scripts/fetch_comments.py 6225262 6225049 --js
 - 2026-10-03:查重加双向包含度(治半句/片段/改写摘要漏检);README 补环境要求与 daily.jsonl 说明;新增 CI(语法检查+元规则自测+查重冒烟)
 - 2026-11-05:提示词 v59(新主管改「剪辑文案」:由 v58.4 派生分段口播稿版本——正文 150~200 字/分 3 段/带时间码;**只管文案**(不管画面)、话题标签暂不出;审查五查→六查(新增查6 朗读同音/ASR);安全底座(双元规则+维度1/2/4/5+终审)零改动。v58.4 原样保留)
 - 2026-11-05:v59.1(删掉前瞻型模板的「球员状态」理由项——与 v58.3 状态暗示铁律冲突,老板定：删掉)
+- 2026-11-05:新增 scripts/hot_topics.py 热点选题器（采集→聚类→真实性核实→热度→排序→top1，含 v59 题材闸粗筛）
