@@ -50,7 +50,7 @@ python3 check.py --stats
 
 ## 提示词
 
-- **社会事件型 · 无 tag**（v1.0，事故/处罚/制度类硬新闻；钩子用「不对等对比＋反问」；总计 ≤120 字，不带话题标签；强制事实核实四问 + 四条红线） → `prompts/copywriting-social-event-no-tag.md`
+- **足球·社会事件型 · 无 tag**（v1.0，足球领域内的事故/处罚/制度；必带足球身份标识；钩子用「不对等对比＋反问」；总计 ≤120 字，不带话题标签；强制事实核实四问 + 四条红线） → `prompts/copywriting-social-event-no-tag.md`
 
 - **剪辑口播型**（当前 v60.3，纯文案/3 秒钩子/双模式/六视角） → `prompts/copywriting-video-voiceover.md`
 - **图文 tag 型**（v58.5，140 字纯文本 + 5 tag + 3 秒钩子，主管要用旧口径时走这个） → `prompts/copywriting-image-text-tag.md`
